@@ -1,48 +1,49 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <title>my first Vue app</title>
+	<meta charset="UTF-8">
+	<title>my first Vue app</title>
 	<!-- <script src="https://unpkg.com/vue"></script> -->
 	<!-- 开发环境版本，包含了有帮助的命令行警告 -->
 	<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 </head>
+
 <body>
+	
 	<p>{{a}}</p>
-	<div id = "app">
-	<p>using mustaches:{{ rawHtml }}</p>
-	<p>using v-html directive: <span v-html="rawHtml"></span></p>
-	
+	<div id="app">
+		<p>using mustaches:{{ rawHtml }}</p>
+		<p>using v-html directive: <span v-html="rawHtml"></span></p>
+
 	</div>
-	
+
 	<script>
-	<!-- 数据对象 -->
+		// 数据对象
 		var data = {
-						a:1,
-						b:0,
-						rawHtml:'<span style="color:red">this should be red</span>'
-					};
-		<!-- Object.freeze(data); -->
+			a: 1,
+			b: 0,
+			rawHtml: '<span style="color:red">this should be red</span>'
+		};
+
+		// Object.freeze(data);
 		var vm = new Vue({
-			el:'p',
-			data:data,
-			created:function(){
+			el: 'p',
+			data: data,
+			created: function () {
 				console.log('a is :' + this.a);
 			}
 		})
-		<!-- alert(vm.$data === data) -->
-		console.log(vm.$data === data)
-		
-		
+			< !--alert(vm.$data === data) -->
+				console.log(vm.$data === data)
 		var app = new Vue({
-			el:'#app',
-			data:{
-				rawHtml:'<span style="color:red">this should be red</span>'
+			el: '#app',
+			data: {
+				rawHtml: '<span style="color:red">this should be red</span>'
 			}
-		
+
 		})
-		
-		
 	</script>
 </body>
+
 </html>
