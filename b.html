@@ -3,47 +3,143 @@
 
 <head>
 	<meta charset="UTF-8">
-	<title>my first Vue app</title>
+	<title>my first Vue app b.html</title>
 	<!-- <script src="https://unpkg.com/vue"></script> -->
 	<!-- 开发环境版本，包含了有帮助的命令行警告 -->
 	<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 </head>
 
 <body>
-	
+
 	<p>{{a}}</p>
+	<!-- 动态绑定 -->
 	<div id="app">
 		<p>using mustaches:{{ rawHtml }}</p>
 		<p>using v-html directive: <span v-html="rawHtml"></span></p>
-
 	</div>
 
+	<div v-bind:id="dynamicId" style="color: aqua;">dynamic id</div>
+
+	<!-- 点击事件 -->
+	<button @click="clickfun($event)" v-bind:disable="isButtonDisabled">button</button>
+	<!-- 绑定点击事件 监听事件 -->
+	<button id="doSomethingId" v-on:click="doSomethingClick()">{{doSomethingText}}</button>
+	<div id="app-5">
+		<button id="doSomethingId2" v-on:click="counter += 1">add + 1</button>
+		<p>The button above has been clicked {{ counter }} times.</p>
+	</div>
+
+	<a id="app-2" v-bind:href="url" v-bind:target="target" v-bind:title="title">百度</a>
+	<!-- 动态参数 -->
+	<a id="app-3" v-bind:[href]="url" target="blank">腾讯</a>
+	<div id="app-4" v-bind:[click]="goAli">阿里巴巴</div>
+
+	<!-- v-bind缩写 -->
+	<a :herf="url">v-bind缩写</a>
+	<!-- v-on缩写  -->
+	<a @click="doSomethingClick()">v-on缩写</a>
 	<script>
+
 		// 数据对象
 		var data = {
 			a: 1,
 			b: 0,
-			rawHtml: '<span style="color:red">this should be red</span>'
+			// isButtonDisabled:false
 		};
 
 		// Object.freeze(data);
 		var vm = new Vue({
-			el: 'p',
+			el: 'body > p',
 			data: data,
 			created: function () {
 				console.log('a is :' + this.a);
 			}
 		})
-			< !--alert(vm.$data === data) -->
-				console.log(vm.$data === data)
+		console.log(vm.$data === data)
 		var app = new Vue({
 			el: '#app',
 			data: {
-				rawHtml: '<span style="color:red">this should be red</span>'
+				rawHtml: '<div style="color:red">this should be red</div>'
 			}
 
+		});
+
+		new Vue({
+			el: 'button',
+			data: {
+				isButtonDisabled: false,
+			},
+			methods: {
+				clickfun(e) {
+					alert(this.isButtonDisabled ? "会被渲染" : "不会被渲染")
+				}
+			}
 		})
+
+		var dos = new Vue({
+			el: '#doSomethingId',
+			data: {
+				doSomethingText: 'doSomething...'
+			},
+			methods: {
+				doSomethingClick() {
+					alert(12);
+					console.log("doSomething.....")
+				}
+			}
+		})
+
+		var vm5 = new Vue({
+			el: '#app-5',
+			data: {
+				counter: 0
+			}
+		})
+
+		// const herf = this.$router.re
+		var vm2 = new Vue({
+			el: '#app-2',
+			data: {
+				url: 'https://www.baidu.com/',
+				target: 'blank',
+				title: '前往百度'
+			},
+			methods: {
+				// goOtherPage(){
+				// 	window.open(url,'_blank')
+				// }
+			}
+		})
+
+		var vm3 = new Vue({
+			el: '#app-3',
+			data: {
+				href: 'href',
+				url: 'https://www.tencent.com/'
+			}
+		})
+
+		var vm4 = new Vue({
+			el: '#app-4',
+			data: {
+				url: 'https://www.alibabagroup.com/cn/global/home',
+				click: 'click'
+			},
+			methods: {
+				goAli() {
+					window.open(this.url);
+				}
+			}
+		})
+
+
 	</script>
 </body>
+<style>
+	a {
+		text-decoration: none;
+		color: black;
+	}
+</style>
 
 </html>
