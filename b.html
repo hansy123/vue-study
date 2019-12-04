@@ -3,7 +3,7 @@
 
 <head>
 	<meta charset="UTF-8">
-	<title>my first Vue app b.html</title>
+	<title>my second Vue app</title>
 	<!-- <script src="https://unpkg.com/vue"></script> -->
 	<!-- 开发环境版本，包含了有帮助的命令行警告 -->
 	<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
@@ -38,6 +38,8 @@
 	<a :herf="url">v-bind缩写</a>
 	<!-- v-on缩写  -->
 	<a @click="doSomethingClick()">v-on缩写</a>
+
+	<!-- <div style="color: blue;"></div> -->
 	<script>
 
 		// 数据对象
@@ -60,8 +62,10 @@
 			el: '#app',
 			data: {
 				rawHtml: '<div style="color:red">this should be red</div>'
+			},
+			created:function(){
+				this.rawHtml = '<div style="color:blue">this should be blue</div>'
 			}
-
 		});
 
 		new Vue({

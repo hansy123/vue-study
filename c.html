@@ -1,0 +1,175 @@
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>my third vue project</title>
+    <!-- <script src="https://unpkg.com/vue"></script> -->
+    <!-- 开发环境版本，包含了有帮助的命令行警告 -->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/axios@0.12.0/dist/axios.min.js"></script> -->
+    <script src="https://cdn.jsdelivr.net/npm/lodash@4.13.1/lodash.min.js"></script>
+    <script src="https://cdn.staticfile.org/axios/0.18.0/axios.min.js"></script>
+</head>
+
+<body>
+    <!-- 计算属性vs方法 -->
+    <div id="example">
+        <p>Original message : "{{message}}"</p>
+        <p>Computed reversed message : {{reversedMessage()}} {{now}}</p>
+    </div>
+
+    <!-- 计算属性与监听器的比较 -->
+    <div id="demo">{{fullName}}</div>
+
+    <div id="watch-example">
+        <p>
+            Ask a yes/no question:
+            <input v-model="question">
+        </p>
+        <p>
+            {{answer}}
+        </p>
+        <!-- <span v-html="rawHtml"></span> -->
+        <!-- rollup未能支持require()方法，使用webpack打包完全没问题！ -->
+        <!-- <img :src="require(rawHtml)"> -->
+    </div>
+
+    <!-- <img src=https://yesno.wtf/assets/no/25-55dc62642f92cf4110659b3c80e0d7ec.gif> -->
+</body>
+
+<script>
+
+    var vm = new Vue({
+        el: "#example",
+        data: {
+            message: "Hello"
+        },
+        // 计算属性是基于它们的响应式依赖进行缓存的。
+        // 只在相关响应式依赖发生改变时它们才会重新求值。
+        // 这就意味着只要 message 还没有发生改变，
+        // 多次访问 reversedMessage 计算属性会立即返回之前的计算结果，
+        // 而不必再次执行函数
+        computed: {
+            reversedMessage: function () {
+                return this.message.split('').reverse().join('')
+            },
+            now: function () {
+                return formatDate(new Date(), 'yyyy-MM-dd hh:mm');
+            }
+        },
+        methods: {
+            reversedMessage() {
+                return this.message.split('').reverse().join('');
+            }
+        }
+    })
+
+    var vm2 = new Vue({
+        el: '#demo',
+        data: {
+            firstName: 'foo',
+            lastName: 'bar',
+            // fullName: 'foo bar'
+        },
+        // 监听器
+        // watch: {
+        //     firstName: function (val) {
+        //         this.fullName = val + " " + this.lastName;
+        //     },
+        //     lastName: function (val) {
+        //         this.fullName = this.firstName + " " + val;
+        //     }
+        // },
+        // 计算属性
+        computed: {
+            // fullName: function () {
+            //     return this.firstName + " " + this.lastName;
+            // }
+            fullName: {
+                get: function () {
+                    return this.firstName + " " + this.lastName;
+                },
+                set: function (newVal) {
+                    var names = newVal.split(" ");
+                    this.firstName = names[0];
+                    this.lastName = names[names.length - 1];
+                }
+            }
+        }
+
+    })
+
+    var watchExampleVm = new Vue({
+        el: '#watch-example',
+        data: {
+            question: '',
+            answer: 'I cannot give you an answer until you ask a question!',
+            // rawHtml:'<img src="https://yesno.wtf/assets/yes/1-af11222d8d4af90bdab8fc447c8cfebf.gif">'
+            // rawHtml: '<img src="https://pics2.baidu.com/feed/e4dde71190ef76c6976e709b58b525ffae51676f.jpeg?token=2e203b58a9858612bdcc6e3cd0760eaf&s=A77059849CA22C8C64B6349E0300C092">'
+            // rawHtml:''
+        },
+        //
+        watch: {
+            // 如果question发生改变，这个函数就会运行
+            question: function (newQuestion, oldQuestion) {
+                alert("question发生改变,newQuestion is" + newQuestion + "\t and oldQuestion is" + oldQuestion);
+                this.answer = 'Waiting for you to stop typing...';
+                this.debouncedGetAnswer();
+            }
+        },
+        created: function () {
+            this.debouncedGetAnswer = _.debounce(this.getAnswer, 500);
+        },
+        methods: {
+            getAnswer: function () {
+                // alert(this.question.indexOf('?'))
+                // if (this.question.indexOf('?') === -1) {
+                //     this.answer = 'Questions usually contain a question mark. ;-)';
+                //     return;
+                // }
+                this.answer = 'Thinking...';
+                var vm = this;
+                axios.get('https://yesno.wtf/api')
+                    .then(function (response) {
+                        vm.answer = _.capitalize(response.data.answer)
+                        // var url = response.data.image;
+                        // this.rawHtml = "<img src=" + url + ">";
+                        // this.rawHtml = url;
+                        // console.log(this.rawHtml)
+                    })
+                    .catch(function (error) {
+                        vm.answer = 'Error! Could not reach the API. ' + error;
+                    })
+            }
+        }
+    })
+
+    // 时间格式化函数
+    function formatDate(date, fmt) {
+        if (/(y+)/.test(fmt)) {
+            fmt = fmt.replace(RegExp.$1, (date.getFullYear() + '').substr(4 - RegExp.$1.length));
+        }
+        let o = {
+            'M+': date.getMonth() + 1,
+            'd+': date.getDate(),
+            'h+': date.getHours(),
+            'm+': date.getMinutes(),
+            's+': date.getSeconds()
+        };
+        for (let k in o) {
+            if (new RegExp(`(${k})`).test(fmt)) {
+                let str = o[k] + '';
+                fmt = fmt.replace(RegExp.$1, (RegExp.$1.length === 1) ? str : padLeftZero(str));
+            }
+        }
+        return fmt;
+    };
+
+    function padLeftZero(str) {
+        return ('00' + str).substr(str.length);
+    }
+</script>
+<style>
+</style>
+
+</html>
