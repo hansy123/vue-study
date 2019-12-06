@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>my fourth vue project</title>
+</head>
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<!-- <script src="vue.js" type="text/javascript" charset="utf-8"></script> -->
+
+<body>
+    <div class="static" v-bind:class="{ active: isActive, 'text-danger': hasError }">
+        {{isActive2}}
+    </div>
+    <div id="app">
+        <p>引用组件</p>
+        <button-counter v-bind:title="title"></button-counter>
+        </n>
+        <button-counter></button-counter>
+        </n>
+        <button-counter></button-counter>
+    </div>
+
+    <div id="blog-post-demo">
+        <blog-post v-for="post in posts" v-bind:key="post.id" v-bind:title="post.title"></blog-post>
+    </div>
+</body>
+<script type="text/javascript">
+    Vue.component('button-counter', {
+        props: ['title'],
+        // data 必须是一个函数
+        data: function () {
+            return {
+                count: 0
+            }
+        },
+        template: '<button v-on:click="clickfun">{{title}} You clicked me {{ count }} times.</button>',
+        methods: {
+            clickfun: function () {
+                this.count++;
+                this.$emit('clicknow', this.count);
+            }
+        }
+    })
+
+    Vue.component('blog-post', {
+        props: ['title'],
+        template: '<h3>{{ title }}</h3>'
+    })
+
+    new Vue({
+        el: '#blog-post-demo',
+        data: {
+            posts: [
+                { id: 1, title: 'My journey with Vue' },
+                { id: 2, title: 'Blogging with Vue' },
+                { id: 3, title: 'Why Vue is so fun' }
+            ]
+        }
+    })
+
+
+    var vm = new Vue({
+        el: "#app",
+        data: {
+            title: 'my first'
+        },
+        methods: {
+            clicknow: function (e) {
+                alert(e)
+                console.log(e);
+            }
+        }
+    });
+
+    new Vue({
+        el: '.static',
+        data: {
+            isActive: false,
+            hasError: false,
+            isActive2: 'qqq'
+        }
+    })
+
+</script>
+<style>
+    .static {
+        width: 200px;
+        height: 200px;
+        text-align: center;
+        line-height: 200px;
+    }
+
+    .active {
+        background: crimson;
+    }
+</style>
+
+
+</html>
